@@ -100,6 +100,7 @@ def home():
 def getdata():
     song = str(request.args.get('q'))
     a = song
+    print(song)
     print(request.remote_addr)
     if song != "None" and len(a.replace(' ', ''))!=0:
         try:
