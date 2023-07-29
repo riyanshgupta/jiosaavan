@@ -106,9 +106,9 @@ def getdata():
         try:
             results = search_songs(song)
             res = {"results":results}
-            # response = make_response(jsonify(res))
-            # response.headers["Content-Type"] = "application/json"
-            return jsonify(res), 200
+            response = make_response(jsonify(res))
+            response.headers["Content-Type"] = "application/json"
+            return response, 200
         except Exception as e:
             logger.error(f"Error occurred: {str(e)}")
             return jsonify({'error': 'An error occurred while processing the request.'}), 500
