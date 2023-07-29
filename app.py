@@ -1,5 +1,6 @@
 import requests
-
+from flask import Flask, make_response, request, jsonify
+import logging
 def search_songs(search):
     session = requests.session() 
     url = "https://www.jiosaavn.com/api.php"
@@ -85,8 +86,51 @@ def audio_url(encrypted_url):
         return None
     return None 
 
-import json
-l = search_songs("Let me down slowly feat Alissa")
-for i in l:
-    print(json.dumps(l, indent=1))
-print(audio_url(l[0].get('encrypted_media_url')))
+app = Flask(__name__)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+@app.route('/')
+def home():
+    print('**************************************************************')
+    print("Home Page reached ALERT: ", request.remote_addr)
+    print('*************************************************************')
+    return make_response(jsonify({"results":['So you successfully managed to reached here']}))
+@app.route('/getdata')
+def getdata():
+    song = str(request.args.get('q'))
+    a = song
+    print(request.remote_addr)
+    if song != "None" and len(a.replace(' ', ''))!=0:
+        try:
+            results = search_songs(song)
+            res = {"results":results}
+            response = make_response(jsonify(res))
+            response.headers["Content-Type"] = "application/json"
+            return response, 200
+        except Exception as e:
+            logger.error(f"Error occurred: {str(e)}")
+            return jsonify({'error': 'An error occurred while processing the request.'}), 500
+
+    return jsonify({"results":[]}), 200
+
+@app.route('/getsong')
+def getsong():
+    song = str(request.args.get('s'))
+    a = song
+    if song!="None" and len(a.replace(' ', ''))!=0:
+        try:
+            results = audio_url(song)
+            res = {"results":results}
+            response = make_response(jsonify(res))
+            response.headers["Content-Type"] = "application/json"
+            return response, 200
+        except Exception as e:
+            logger.error(f"Error occurred: {str(e)}")
+            return jsonify({'error': 'An error occurred while processing the request.'}), 500
+
+    return jsonify({"results":[]}), 200
+
+if  __name__ == '__main__':
+    with app.app_context():
+        app.run()
