@@ -1,6 +1,12 @@
 import requests
 from flask import Flask, make_response, request, jsonify
 import logging
+from urllib.parse import urlencode
+app = Flask(__name__)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
 def search_songs(search):
     session = requests.session() 
     url = "https://www.jiosaavn.com/api.php"
@@ -87,9 +93,7 @@ def audio_url(encrypted_url):
     return None 
 # print(search_songs("Let me down Slowly")[0]['encrypted_media_url'])
 # print(audio_url("ID2ieOjCrwfgWvL5sXl4B1ImC5QfbsDykJc9GKuqYAscqeQDCNDW0sQN9L1Aj0zgrfixrw7BYNiSHpFk/2oZPhw7tS9a8Gtq"))
-app = Flask(__name__)
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+
 
 @app.route('/')
 def home():
@@ -115,24 +119,25 @@ def getdata():
             return jsonify({'error': 'An error occurred while processing the request.'}), 500
 
     return jsonify({"results":[]}), 200
-
+# print(audio_url("ID2ieOjCrwfgWvL5sXl4B1ImC5QfbsDyBlrJGTfFbyAhRCAkx//LGIlozHj/EqcPOiQvaQf6g3CFte9EDf+yEhw7tS9a8Gtq"))
 @app.route('/getsong')
 def getsong():
-    song = str(request.args.get('s'))
-    a = song
-    if song!="None" and len(a.replace(' ', ''))!=0:
+    url=request.get_data(as_text=True)
+    print(url)
+    a = url
+    if url!=None and len(a.replace(' ', ''))!=0:
         try:
-            results = audio_url(song)
+            results = audio_url(url)
             res = {"results":list(results)}
             response = make_response(jsonify(res))
             response.headers["Content-Type"] = "application/json"
             return response, 200
         except Exception as e:
             logger.error(f"Error occurred: {str(e)}")
-            return jsonify({'error': 'An error occurred while processing the request.'}), 500
+            return jsonify({'error': 'An error occurred while processing the request.'}), 200
 
     return jsonify({"results":[]}), 200
 
-if  __name__ == '__main__':
+if  __name__ == "__main__":
     with app.app_context():
-        app.run()
+        app.run(debug=True)
