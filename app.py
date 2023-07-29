@@ -77,15 +77,16 @@ def audio_url(encrypted_url):
             i = audio_url1.index('?')
             audio_url1 = audio_url1[0:i]
             a = audio_url1.index('_')
-            audio_url =  {
-                "96_kbps": audio_url1[0:a+1]+"96.mp4",
-                "160_kbps": audio_url1[0:a+1]+"160.mp4",
-                "320_kbps": audio_url1[0:a+1]+"320.mp4"
-            }
+            audio_url =  [
+                {"96_kbps": audio_url1[0:a+1]+"96.mp4"},
+                {"160_kbps": audio_url1[0:a+1]+"160.mp4"},
+                {"320_kbps": audio_url1[0:a+1]+"320.mp4"}
+            ]
             return audio_url
         return None
     return None 
-
+# print(search_songs("Let me down Slowly")[0]['encrypted_media_url'])
+# print(audio_url("ID2ieOjCrwfgWvL5sXl4B1ImC5QfbsDykJc9GKuqYAscqeQDCNDW0sQN9L1Aj0zgrfixrw7BYNiSHpFk/2oZPhw7tS9a8Gtq"))
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -122,7 +123,7 @@ def getsong():
     if song!="None" and len(a.replace(' ', ''))!=0:
         try:
             results = audio_url(song)
-            res = {"results":results}
+            res = {"results":list(results)}
             response = make_response(jsonify(res))
             response.headers["Content-Type"] = "application/json"
             return response, 200
