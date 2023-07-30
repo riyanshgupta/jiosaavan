@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 def search_songs(search):
-    # session = requests.session() 
+    session = requests.session() 
     url = "https://www.jiosaavn.com/api.php"
     headers={
     'Accept': 'application/json, text/plain, */*',
@@ -27,8 +27,8 @@ def search_songs(search):
         "n": 20,
         "__call": "search.getResults"
     }
-    response = requests.request("GET", url=url, headers=headers, params=payload)
-    # session.close()
+    response = session.get(url=url, headers=headers, params=payload)
+    session.close()
     results = dict(response.json()).get('results')
     data = []
     for item in results:
@@ -125,7 +125,7 @@ def getdata():
 def getsong():
     if request.method != 'POST':
         return jsonify({"results":['Expecting a post request']}), 200
-    url=dict(request.get_json()).get('url')
+    url=dict(request.get_json()).get('encrypted_media_url')
     print(url)
     a = url
     if url!=None and len(a.replace(' ', ''))!=0:
