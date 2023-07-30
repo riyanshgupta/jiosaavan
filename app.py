@@ -1,7 +1,8 @@
 import requests
 from flask import Flask, make_response, request, jsonify
 import logging
-from urllib.parse import urlencode
+
+import json
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -122,7 +123,7 @@ def getdata():
 # print(audio_url("ID2ieOjCrwfgWvL5sXl4B1ImC5QfbsDyBlrJGTfFbyAhRCAkx//LGIlozHj/EqcPOiQvaQf6g3CFte9EDf+yEhw7tS9a8Gtq"))
 @app.route('/getsong')
 def getsong():
-    url=request.get_data(as_text=True)
+    url=dict(request.get_json()).get('url')
     print(url)
     a = url
     if url!=None and len(a.replace(' ', ''))!=0:
@@ -140,4 +141,4 @@ def getsong():
 
 if  __name__ == "__main__":
     with app.app_context():
-        app.run(debug=True)
+        app.run()
