@@ -121,8 +121,10 @@ def getdata():
 
     return jsonify({"results":[]}), 200
 # print(audio_url("ID2ieOjCrwfgWvL5sXl4B1ImC5QfbsDyBlrJGTfFbyAhRCAkx//LGIlozHj/EqcPOiQvaQf6g3CFte9EDf+yEhw7tS9a8Gtq"))
-@app.route('/getsong')
+@app.route('/getsong', methods=['POST', 'GET'])
 def getsong():
+    if request.method != 'POST':
+        return jsonify({"results":['Expecting a post request']}), 200
     url=dict(request.get_json()).get('url')
     print(url)
     a = url
