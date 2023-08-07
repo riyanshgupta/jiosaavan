@@ -4,4 +4,4 @@ This repository showcases how to obtain song information from JioSaavn's officia
 Just for educational purposes.
 
 # Usage
-Use at your own risk
+Use it, they don't care... haha
